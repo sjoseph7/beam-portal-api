@@ -94,7 +94,12 @@ app.use(errorHandler);
 
 // "Home" request
 app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "Hello, World!" });
+  res.send("BEAM Demo API");
+});
+
+// "docs" request
+app.get("/docs", (req: Request, res: Response) => {
+  res.sendFile(`${process.cwd()}/public/docs/index.html`);
 });
 
 // All other requests
