@@ -198,7 +198,7 @@ export const resetPassword = asyncHandler(
 
     const user = await User.findOne({
       __resetPasswordToken,
-      __resetPasswordExpiration: { $gt: Date.now() }
+      __resetPasswordExpiration: { $gt: new Date() } //
     });
 
     if (!user) {
