@@ -21,10 +21,23 @@ const PersonSchema = new Schema(
       required: [true, "no last name provided"],
       maxlength: [100, "last name cannot exceed 100 characters"]
     },
-    email: {
-      // read-only (updated when user email is updated)
+    username: {
+      // read-only (updated when user username is updated)
       type: String,
-      trim: true
+      trim: true,
+      required: [true, "no username provided"]
+    },
+    type: {
+      // read-only (updated when user role is updated)
+      type: String,
+      enum: ["student", "instructor", "admin"],
+      lowercase: true,
+      required: [true, "no person type specified"]
+    },
+    region: {
+      type: String,
+      ref: "region",
+      required: [true, "no region specified"]
     }
   },
   {
@@ -46,14 +59,14 @@ PersonSchema.virtual("coursesAsStudent", {
   foreignField: "students"
 });
 
-PersonSchema.virtual("meetingsAsHost", {
-  ref: "meeting",
+PersonSchema.virtual("scheduleItemsAsHost", {
+  ref: "schedule-item",
   localField: "_id",
   foreignField: "host"
 });
 
-PersonSchema.virtual("meetingsAsParticipant", {
-  ref: "meeting",
+PersonSchema.virtual("scheduleItemsAsParticipant", {
+  ref: "schedule-item",
   localField: "_id",
   foreignField: "participants"
 });

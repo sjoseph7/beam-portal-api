@@ -14,7 +14,7 @@ import path from "path";
 import { User } from "../models/User";
 
 // @desc    Get all users
-// @route   GET /api/v1/auth/users
+// @route   GET /api/v2/auth/users
 // @access  Private/Admin
 export const getUsers = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -23,7 +23,7 @@ export const getUsers = asyncHandler(
 );
 
 // @desc    Get one user
-// @route   GET /api/v1/auth/users/:id
+// @route   GET /api/v2/auth/users/:id
 // @access  Private/Admin
 export const getUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -42,7 +42,7 @@ export const getUser = asyncHandler(
 );
 
 // @desc    Create User
-// @route   POST /api/v1/auth/users
+// @route   POST /api/v2/auth/users
 // @access  Private/Admin
 export const createUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -55,7 +55,7 @@ export const createUser = asyncHandler(
 );
 
 // @desc    Update User
-// @route   PUT /api/v1/auth/users/:id
+// @route   PUT /api/v2/auth/users/:id
 // @access  Private/Admin
 export const updateUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -71,7 +71,7 @@ export const updateUser = asyncHandler(
 );
 
 // @desc    Delete User
-// @route   DELETE /api/v1/auth/users/:id
+// @route   DELETE /api/v2/auth/users/:id
 // @access  Private/Admin
 export const deleteUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

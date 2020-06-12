@@ -5,7 +5,8 @@
  */
 
 import { Schema, model, Types } from "mongoose";
-import { ICourse } from "../interfaces/Course";
+import { ICourse } from "../interfaces/ICourse";
+import { arrayLengthLimits } from "../utils/arrayLengthLimits";
 
 const CourseSchema = new Schema(
   {
@@ -15,10 +16,11 @@ const CourseSchema = new Schema(
       required: [true, "no name provided"],
       maxlength: [100, "name cannot exceed 100 characters"]
     },
-    instructor: {
-      type: Types.ObjectId,
+    instructors: {
+      type: [Types.ObjectId],
       ref: "person",
-      required: [true, "no instructor provided"]
+      required: [true, "no instructors provided"],
+      validate: [arrayLengthLimits(1), "must list at least one instructor"]
     },
     students: {
       type: [Types.ObjectId],

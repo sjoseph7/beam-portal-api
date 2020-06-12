@@ -7,11 +7,11 @@
 import { Types, Document } from "mongoose";
 
 export interface IUser extends Document {
-  email: string;
+  username: string;
   role: string;
   password: string;
-  __resetPasswordToken?: string;
-  __resetPasswordExpiration?: Date;
+  __passwordResetToken?: string;
+  __passwordResetTokenExpiration?: Date;
   _dbRef?: Types.ObjectId;
   getSignedJwt: Function;
   matchPassword: Function;

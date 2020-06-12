@@ -4,7 +4,7 @@ import { asyncHandler } from "../../middleware/async";
 import { Person } from "../models/Person";
 
 // @desc    Get all people
-// @route   GET /api/v1/people
+// @route   GET /api/v2/people
 // @access  Public
 export const getPeople = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -16,7 +16,7 @@ export const getPeople = asyncHandler(
 );
 
 // @desc    Get one person
-// @route   GET /api/v1/person/:id
+// @route   GET /api/v2/person/:id
 // @access  Public
 export const getPerson = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -32,7 +32,7 @@ export const getPerson = asyncHandler(
 );
 
 // @desc    Create new person
-// @route   POST /api/v1/person
+// @route   POST /api/v2/person
 // @access  Private
 export const createPerson = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -57,7 +57,7 @@ export const createPerson = asyncHandler(
 );
 
 // @desc    Update one person
-// @route   UPDATE /api/v1/people/:id
+// @route   UPDATE /api/v2/people/:id
 // @access  Private
 export const updatePerson = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -85,7 +85,7 @@ export const updatePerson = asyncHandler(
 );
 
 // @desc    Delete one person
-// @route   DELETE /api/v1/people/:id
+// @route   DELETE /api/v2/people/:id
 // @access  Private
 export const deletePerson = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

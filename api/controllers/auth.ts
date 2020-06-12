@@ -6,15 +6,15 @@ import { User } from "../models/User";
 import crypto from "crypto";
 
 // @desc    Register user
-// @route   POST /api/v1/auth/register
+// @route   POST /api/v2/auth/register
 // @access  Public
 export const register = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password, role } = req.body;
+    const { username, password, role } = req.body;
 
     // Create user
     const user = await User.create({
-      email,
+      username,
       password,
       role
     });
@@ -24,18 +24,18 @@ export const register = asyncHandler(
 );
 
 // @desc    Login user
-// @route   POST /api/v1/auth/login
+// @route   POST /api/v2/auth/login
 // @access  Public
 export const login = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!email || !password) {
-      return next(new ErrorResponse(`No email or password provided`, 400));
+    if (!username || !password) {
+      return next(new ErrorResponse(`No username or password provided`, 400));
     }
 
     // Create user
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ username }).select("+password");
 
     if (!user) {
       return next(new ErrorResponse(`Invalid credentials`, 401));
@@ -52,7 +52,7 @@ export const login = asyncHandler(
 );
 
 // @desc    Logout user
-// @route   POST /api/v1/auth/logout
+// @route   POST /api/v2/auth/logout
 // @access  Private
 export const logout = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ export const logout = asyncHandler(
 );
 
 // @desc    Get current logged in user
-// @route   GET /api/v1/auth/details
+// @route   GET /api/v2/auth/details
 // @access  Private
 export const whoAmI = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -83,11 +83,11 @@ export const whoAmI = asyncHandler(
 );
 
 // @desc    Update user details (excluding password and role)
-// @route   PATCH /api/v1/auth/details
+// @route   PATCH /api/v2/auth/details
 // @access  Private
 export const udpateDetails = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const relevantFields = { email: req.body.email };
+    const relevantFields = { username: req.body.username };
 
     const user = await User.findByIdAndUpdate(
       req.user && req.user.id,
@@ -106,7 +106,7 @@ export const udpateDetails = asyncHandler(
 );
 
 // @desc    Update user role
-// @route   PATCH /api/v1/auth/role
+// @route   PATCH /api/v2/auth/role
 // @access  Private
 export const updateRole = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -129,7 +129,7 @@ export const updateRole = asyncHandler(
 );
 
 // @desc    Update password
-// @route   PATCH /api/v1/auth/password
+// @route   PATCH /api/v2/auth/password
 // @access  Private
 export const updatePassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -154,15 +154,18 @@ export const updatePassword = asyncHandler(
 );
 
 // @desc    Forgot password
-// @route   POST /api/v1/auth/password
+// @route   POST /api/v2/auth/password
 // @access  Public
 export const forgotPassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findOne({ email: req.body.email }); //.select("password");
+    const user = await User.findOne({ username: req.body.username }); //.select("password");
 
     if (!user) {
       return next(
-        new ErrorResponse(`No user with email '${req.body.email}' exists`, 404)
+        new ErrorResponse(
+          `No user with username '${req.body.username}' exists`,
+          404
+        )
       );
     }
 
@@ -172,7 +175,7 @@ export const forgotPassword = asyncHandler(
 
     const resetUrl = `${req.protocol}://${req.get(
       "host"
-    )}/api/v1/auth/password/${resetToken}`;
+    )}/api/v2/auth/password/${resetToken}`;
 
     const message = `You are receiving this message because you (or someone else) has requested the reset of a password. Please make a PATCH request to: ${resetUrl}`;
 
@@ -186,19 +189,19 @@ export const forgotPassword = asyncHandler(
 );
 
 // @desc    Reset password
-// @route   PUT /api/v1/auth/password/:resettoken
+// @route   PUT /api/v2/auth/password/:resettoken
 // @access  Public
 export const resetPassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     // Get hashed token
-    const __resetPasswordToken = crypto
+    const __passwordResetToken = crypto
       .createHash("sha256")
       .update(req.params.resettoken)
       .digest("hex");
 
     const user = await User.findOne({
-      __resetPasswordToken,
-      __resetPasswordExpiration: { $gt: new Date() } //
+      __passwordResetToken,
+      __passwordResetTokenExpiration: { $gt: new Date() } //
     });
 
     if (!user) {
@@ -206,8 +209,8 @@ export const resetPassword = asyncHandler(
     }
     // Set new password ( and remove reset token )
     user.password = req.body.password;
-    user.__resetPasswordToken = undefined;
-    user.__resetPasswordExpiration = undefined;
+    user.__passwordResetToken = undefined;
+    user.__passwordResetTokenExpiration = undefined;
     await user.save();
 
     sendTokenResponse(res, user, 200);

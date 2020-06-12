@@ -13,8 +13,10 @@ import colors from "colors";
 import { connectDB } from "./api/utils/db";
 import { Person } from "./api/models/Person";
 import { Course } from "./api/models/Course";
-import { Meeting } from "./api/models/Meeting";
+import { ScheduleItem } from "./api/models/ScheduleItem";
 import { User } from "./api/models/User";
+import { Announcement } from "./api/models/Announcement";
+import { Region } from "./api/models/Region";
 
 // import colors from "colors"
 
@@ -28,8 +30,14 @@ const courses = JSON.parse(
 const people = JSON.parse(
   fs.readFileSync(`${__dirname}/../_data/people.json`, `utf-8`)
 );
-const meetings = JSON.parse(
-  fs.readFileSync(`${__dirname}/../_data/meetings.json`, `utf-8`)
+const scheduleItems = JSON.parse(
+  fs.readFileSync(`${__dirname}/../_data/scheduleItems.json`, `utf-8`)
+);
+const announcements = JSON.parse(
+  fs.readFileSync(`${__dirname}/../_data/announcements.json`, `utf-8`)
+);
+const regions = JSON.parse(
+  fs.readFileSync(`${__dirname}/../_data/regions.json`, `utf-8`)
 );
 const users = JSON.parse(
   fs.readFileSync(`${__dirname}/../_data/users.json`, `utf-8`)
@@ -40,7 +48,9 @@ const importData = async (options?: { exit: boolean }) => {
   try {
     await Person.create(people);
     await Course.create(courses);
-    await Meeting.create(meetings);
+    await ScheduleItem.create(scheduleItems);
+    await Announcement.create(announcements);
+    await Region.create(regions);
     await User.create(users);
     console.log("Data imported"); //.green)//.inverse);
     if (options && options.exit === false) {

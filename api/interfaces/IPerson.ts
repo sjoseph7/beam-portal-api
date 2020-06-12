@@ -3,9 +3,11 @@ import { Types, Document } from "mongoose";
 export interface IPerson extends Document {
   firstName: string;
   lastName: string;
-  email?: string;
+  username?: string;
+  type?: string;
+  region: Types.ObjectId;
   coursesAsInstructor?: [Types.ObjectId];
   coursesAsStudent?: [Types.ObjectId];
-  meetingsAsHost?: [Types.ObjectId];
-  meetingsAsParticipant?: [Types.ObjectId];
+  scheduleItemsAsHost?: [Types.ObjectId];
+  scheduleItemsAsParticipant?: [Types.ObjectId];
 }

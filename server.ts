@@ -6,9 +6,11 @@ import fileUploader from "express-fileupload";
 import { connectDB } from "./api/utils/db";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
-import meetings from "./routes/meetings";
-import people from "./routes/people";
+import announcements from "./routes/announcements";
+import scheduleItem from "./routes/scheduleItem";
 import courses from "./routes/courses";
+import regions from "./routes/regions";
+import people from "./routes/people";
 import users from "./routes/users";
 import auth from "./routes/auth";
 import { Server } from "http";
@@ -84,22 +86,48 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Routes
-app.use("/api/v1/meetings", meetings);
-app.use("/api/v1/people", people);
-app.use("/api/v1/courses", courses);
-app.use("/api/v1/users", users);
-app.use("/api/v1/auth", auth);
+
+// ==== API_v1 ==== //
+// "docs" request
+app.get("/api/v1/docs", (req: Request, res: Response) => {
+  res.sendFile(`${process.cwd()}/public/docs/docs-v1.html`);
+});
+
+app.get("/api/v1/v2/migration", (req: Request, res: Response) => {
+  res.sendFile(`${process.cwd()}/public/migration/v1$v2.html`);
+});
+
+// Catch all deprecation error
+app.all("/api/v1/*", (req, res, next) => {
+  res.status(301).json({
+    success: false,
+    error: {
+      message: "api/v1 has been deprecated, please use api/v2 instead.",
+      docs: "/api/v2/docs",
+      migrationGuide: "/api/v1/v2/migration"
+    }
+  });
+});
+
+// ==== API_v2 ==== //
+app.use("/api/v2/schedule-items", scheduleItem);
+app.use("/api/v2/announcements", announcements);
+app.use("/api/v2/regions", regions);
+app.use("/api/v2/courses", courses);
+app.use("/api/v2/people", people);
+app.use("/api/v2/users", users);
+app.use("/api/v2/auth", auth);
 
 app.use(errorHandler);
+
+// API_v2 docs
+app.get("/api/v2/docs", (req: Request, res: Response) => {
+  res.sendFile(`${process.cwd()}/public/docs/docs-v2.html`);
+});
 
 // "Home" request
 app.get("/", (req: Request, res: Response) => {
   res.send("BEAM Demo API");
-});
-
-// "docs" request
-app.get("/docs", (req: Request, res: Response) => {
-  res.sendFile(`${process.cwd()}/public/docs/index.html`);
 });
 
 // All other requests

@@ -12,20 +12,17 @@ import crypto from "crypto";
 
 const UserSchema = new Schema(
   {
-    email: {
+    username: {
       type: String,
       trim: true,
-      maxlength: 100,
-      required: [true, "no email address provided"],
-      unique: [true, "email already exists"],
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "provided email address is not valid"
-      ]
+      unique: [true, "username already exists"],
+      required: [true, "no username provided"],
+      maxlength: 100
     },
     role: {
       type: String,
       enum: ["student", "instructor", "admin"],
+      lowercase: true,
       required: [true, "no role provided"]
     },
     password: {
@@ -35,11 +32,17 @@ const UserSchema = new Schema(
       maxlength: 500,
       select: false // This prevents the property from appearing in requests for users (unless specifically requested)
     },
-    __resetPasswordToken: String,
-    __resetPasswordExpiration: Date,
+    __passwordResetToken: {
+      type: String,
+      select: false
+    },
+    __passwordResetTokenExpiration: {
+      type: Date,
+      select: false
+    },
     _dbRef: {
       type: Schema.Types.ObjectId,
-      refPath: "role" // TODO: determine if you can use a function here to filter 'admin'
+      refPath: "person"
     }
   },
   {
@@ -76,13 +79,13 @@ UserSchema.methods.getSignedJwt = function () {
 UserSchema.methods.getResetPasswordToken = function () {
   // Generate token
   const resetToken = crypto.randomBytes(20).toString("hex");
-  this.__resetPasswordToken = crypto
+  this.__passwordResetToken = crypto
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
 
   // Set expiration
-  this.__resetPasswordExpiration =
+  this.__passwordResetTokenExpiration =
     Date.now() +
     ((process.env.PASSWORD_RESET_TOKEN_EXPIRE || 1) as number) * 60 * 1000;
 

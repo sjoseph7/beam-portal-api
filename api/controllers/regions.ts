@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { ErrorResponse } from "../utils/errorResponse";
 import { asyncHandler } from "../../middleware/async";
-import { Course } from "../models/Course";
+import { Region } from "../models/Region";
 import geocoder from "../utils/geocoder";
 import colors from "colors";
 import path from "path";
 
-// @desc    Get all courses
-// @route   GET /api/v2/courses
+// @desc    Get all regions
+// @route   GET /api/v2/regions
 // @access  Private
-export const getCourses = asyncHandler(
+export const getRegions = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!res.advancedResults) {
       return next(new ErrorResponse(`Server error`, 500));
@@ -18,90 +18,90 @@ export const getCourses = asyncHandler(
   }
 );
 
-// @desc    Get one course
-// @route   GET /api/v2/course/:id
+// @desc    Get one region
+// @route   GET /api/v2/region/:id
 // @access  Private
-export const getCourse = asyncHandler(
+export const getRegion = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await Course.findById(req.params.id);
+    const region = await Region.findById(req.params.id);
 
-    //No course found...
-    if (!course) {
+    //No region found...
+    if (!region) {
       return next(new ErrorResponse(`Resource not found`, 404));
     }
 
-    res.status(200).json({ success: true, data: course });
+    res.status(200).json({ success: true, data: region });
   }
 );
 
-// @desc    Create new course
-// @route   POST /api/v2/course
+// @desc    Create new region
+// @route   POST /api/v2/region
 // @access  Private
-export const createCourse = asyncHandler(
+export const createRegion = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    // Create new course
-    let newCourse = await Course.create(req.body);
-    res.status(201).json({ success: true, data: newCourse });
+    // Create new region
+    let newRegion = await Region.create(req.body);
+    res.status(201).json({ success: true, data: newRegion });
   }
 );
 
-// @desc    Update one course
-// @route   UPDATE /api/v2/courses/:id
+// @desc    Update one region
+// @route   UPDATE /api/v2/regions/:id
 // @access  Private
-export const updateCourse = asyncHandler(
+export const updateRegion = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    let course = await Course.findById(req.params.id);
+    let region = await Region.findById(req.params.id);
 
-    // No course found...
-    if (!course) {
+    // No region found...
+    if (!region) {
       return next(new ErrorResponse(`Resource not found`, 404));
     }
 
-    // Check if user is course author
-    // if (course.author.toString() !== req.user.id && req.user.role !== "admin") {
+    // Check if user is region author
+    // if (region.author.toString() !== req.user.id && req.user.role !== "admin") {
     //   return next(
     //     new ErrorResponse(`User is not authorized to update this resource`, 403)
     //   );
     // }
 
-    // Update course
-    course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+    // Update region
+    region = await Region.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
     });
-    res.status(200).json({ success: true, data: course });
+    res.status(200).json({ success: true, data: region });
   }
 );
 
-// @desc    Delete one course
-// @route   DELETE /api/v2/courses/:id
+// @desc    Delete one region
+// @route   DELETE /api/v2/regions/:id
 // @access  Private
-export const deleteCourse = asyncHandler(
+export const deleteRegion = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await Course.findById(req.params.id);
+    const region = await Region.findById(req.params.id);
 
-    // No course found...
-    if (!course) {
+    // No region found...
+    if (!region) {
       return next(new ErrorResponse(`Resource not found`, 404));
     }
 
-    // Check if user is course author
-    // if (course.author.toString() !== req.user.id && req.user.role !== "admin") {
+    // Check if user is region author
+    // if (region.author.toString() !== req.user.id && req.user.role !== "admin") {
     //   return next(
     //     new ErrorResponse(`User is not authorized to delete this resource`, 403)
     //   );
     // }
 
-    await course.remove();
+    await region.remove();
     // !204 returns nothing, use 200 if you want a JSON response to parse
     res.status(200).json({ success: true, data: {} });
   }
 );
 
-// @desc    Get courses uploaded within a specified radius
-// @route   GET /api/v2/courses/radius/:zipcode/:distance/:unit
+// @desc    Get regions uploaded within a specified radius
+// @route   GET /api/v2/regions/radius/:zipcode/:distance/:unit
 // @access  Private
-export const getCoursesInRadius = asyncHandler(
+export const getRegionsInRadius = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { zipcode, distance, units } = req.params;
 
@@ -112,32 +112,32 @@ export const getCoursesInRadius = asyncHandler(
     // Calc radius using radians
     // Divide dist by radius of Earth (3,963 mi || 6378.1 km)
     const radius = parseFloat(distance) / (units === "km" ? 6378.1 : 3963);
-    const courses = await Course.find({
+    const regions = await Region.find({
       location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
     });
 
     res.status(200).json({
       success: true,
-      count: courses.length,
-      data: courses
+      count: regions.length,
+      data: regions
     });
   }
 );
 
-// @desc    Upload course photo
-// @route   PUT /api/v2/courses/:id/photo
+// @desc    Upload region photo
+// @route   PUT /api/v2/regions/:id/photo
 // @access  Private
 export const uploadPhoto = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await Course.findById(req.params.id);
+    const region = await Region.findById(req.params.id);
 
-    // No course found...
-    if (!course) {
+    // No region found...
+    if (!region) {
       return next(new ErrorResponse(`Resource not found`, 404));
     }
 
-    // !Check if user is course author
-    // if (course.author.toString() !== req.user.id && req.user.role !== "admin") {
+    // !Check if user is region author
+    // if (region.author.toString() !== req.user.id && req.user.role !== "admin") {
     //   return next(
     //     new ErrorResponse(`User is not authorized to update this resource`, 403)
     //   );
@@ -168,12 +168,12 @@ export const uploadPhoto = asyncHandler(
     }
 
     // Change photo filename
-    file.name = `${course._id}_course_photo${path.parse(file.name).ext}`;
+    file.name = `${region._id}_region_photo${path.parse(file.name).ext}`;
 
     // Upload file
     try {
       await file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
-      await Course.findByIdAndUpdate(req.params.id, {
+      await Region.findByIdAndUpdate(req.params.id, {
         photo: file.name
       });
       res.status(200).json({ success: true, data: file.name });
