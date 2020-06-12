@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v1 --> v2 Migration Guide</title>
+</head>
+
+<body>
+  <!-- Converted with (https://markdowntohtml.com/) -->
+  <h1 id="migration-guide-api_v1-api_v2">MIGRATION GUIDE: API_v1 --&gt; API_v2</h1>
+  <p>@author: sjoseph7<br>@created: 11 June 2020</p>
+  <h2 id="users">USERS</h2>
+  <p>email -&gt; username</p>
+  <h2 id="people">PEOPLE</h2>
+  <p>(added type)<br>(added region)</p>
+  <h2 id="courses">COURSES</h2>
+  <p>instructor:ObjectId(Person) -&gt; instructors:[ObjectId(Person)] </p>
+  <h2 id="meetings-schedule-items">MEETINGS -&gt; SCHEDULE-ITEMS</h2>
+  <p>(added name)<br>(added description)<br>(added note) // used for information like &quot;required for a week&quot; or
+    &quot;optional&quot;<br>(added days)<br>(added region)<br>startTime: Date -&gt; startTime:
+    <code>{hour:number, minute:number}</code><br>endTime: Date -&gt; endTime:
+    <code>{hour:number, minute:number}</code><br>host:ObjectId(Person) -&gt; hosts:[ObjectId(Person)]<br>link:string
+    -&gt;
+    links:[<code>{text:string, type:enum(&quot;adobe-connect&quot;, &quot;open-learning&quot;), url:string}</code>]</p>
+
+
+</body>
+
+</html>
