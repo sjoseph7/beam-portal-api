@@ -75,7 +75,7 @@ app.use(cors());
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 60 * 1000 * 100, // 100 minutes
-  max: 100
+  max: 1000
 });
 // app.set(`trust proxy`, 1); // Enable if behind a reverse proxy (e.g. Heroku, Bluemix)
 app.use(limiter);
