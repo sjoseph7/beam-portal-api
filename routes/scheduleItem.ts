@@ -34,7 +34,7 @@ router
   .get(
     authenticate,
     authorize("student", "instructor", "admin"),
-    advancedResults(ScheduleItem, ""),
+    advancedResults(ScheduleItem, "hosts participants"),
     getScheduleItems
   )
   .post(authenticate, authorize("instructor", "admin"), createScheduleItem);

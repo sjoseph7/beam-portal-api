@@ -1,7 +1,7 @@
 /**
  * Mongoose "Person" Schema
  *
- * @desc This is the schema for a Person.
+ * @desc This is the schema for a person.
  */
 
 import { Schema, model, Types, HookNextFunction } from "mongoose";
@@ -50,7 +50,7 @@ const PersonSchema = new Schema(
 PersonSchema.virtual("coursesAsInstructor", {
   ref: "course",
   localField: "_id",
-  foreignField: "instructor"
+  foreignField: "instructors"
 });
 
 PersonSchema.virtual("coursesAsStudent", {
@@ -62,7 +62,7 @@ PersonSchema.virtual("coursesAsStudent", {
 PersonSchema.virtual("scheduleItemsAsHost", {
   ref: "schedule-item",
   localField: "_id",
-  foreignField: "host"
+  foreignField: "hosts"
 });
 
 PersonSchema.virtual("scheduleItemsAsParticipant", {
@@ -71,4 +71,4 @@ PersonSchema.virtual("scheduleItemsAsParticipant", {
   foreignField: "participants"
 });
 
-export let Person = model<IPerson>("Person", PersonSchema);
+export let Person = model<IPerson>("person", PersonSchema);

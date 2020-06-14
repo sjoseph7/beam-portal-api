@@ -93,14 +93,12 @@ const ScheduleItemSchema = new Schema(
       required: [true, "no end time provided"]
     },
     hosts: {
-      type: [Types.ObjectId],
-      ref: "person",
+      type: [{ type: Types.ObjectId, ref: "person" }],
       required: [true, "no host provided"],
       validate: [arrayLengthLimits(1), "must list at least one host"]
     },
     participants: {
-      type: [Types.ObjectId],
-      ref: "person"
+      type: [{ type: Types.ObjectId, ref: "person" }]
     },
     links: {
       _id: false,
