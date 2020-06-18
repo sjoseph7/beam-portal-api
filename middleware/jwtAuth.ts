@@ -1,6 +1,7 @@
 import jwt from "express-jwt";
-import jwtAuthz from "express-jwt-authz";
 import jwksRsa from "jwks-rsa";
+import { Request, Response, NextFunction } from "express";
+import { ErrorResponse } from "../api/utils/errorResponse";
 
 // Authentication middleware. When used, the
 // Access Token must exist and be verified against
@@ -22,4 +23,18 @@ export const checkJwt = jwt({
   algorithms: ["RS256"]
 });
 
-export const checkScopes = jwtAuthz(["read:messages"]);
+export const checkPermissions = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    // Reject users with invalid roles
+    const intersections = req.user.permissions.filter((permission: any) =>
+      roles.includes(permission)
+    );
+    if (intersections.length === 0) {
+      return next(
+        new ErrorResponse(`Not authorized to access this route`, 403)
+      );
+    }
+    // Accept users with valid roles
+    next();
+  };
+};

@@ -6,7 +6,6 @@
 
 import { Router, Request, Response, NextFunction } from "express";
 import { advancedResults } from "../middleware/advancedResults";
-import { authenticate, authorize } from "../middleware/auth";
 import { ErrorResponse } from "../api/utils/errorResponse";
 import { Person } from "../api/models/Person";
 import {
@@ -16,20 +15,21 @@ import {
   updatePerson,
   deletePerson
 } from "../api/controllers/people";
+import { checkJwt, checkPermissions } from "../middleware/jwtAuth";
 
 const router = Router();
 
 router
   .route("/:id")
-  .get(authenticate, authorize("student", "instructor", "admin"), getPerson)
-  .patch(authenticate, authorize("admin"), updatePerson)
-  .delete(authenticate, authorize("admin"), deletePerson);
+  .get(checkJwt, checkPermissions("student", "instructor", "admin"), getPerson)
+  .patch(checkJwt, checkPermissions("admin"), updatePerson)
+  .delete(checkJwt, checkPermissions("admin"), deletePerson);
 
 router
   .route("/")
   .get(
-    authenticate,
-    authorize("student", "instructor", "admin"),
+    checkJwt,
+    checkPermissions("student", "instructor", "admin"),
     advancedResults(
       Person,
       "coursesAsInstructor coursesAsStudent meetingsAsHost meetingsAsParticipant"
@@ -37,8 +37,8 @@ router
     getPeople
   )
   .post(
-    authenticate,
-    authorize("student", "instructor", "admin"),
+    checkJwt,
+    checkPermissions("student", "instructor", "admin"),
     createPerson
   );
 

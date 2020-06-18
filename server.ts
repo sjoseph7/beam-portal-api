@@ -115,8 +115,8 @@ app.use("/api/v2/announcements", announcements);
 app.use("/api/v2/regions", regions);
 app.use("/api/v2/courses", courses);
 app.use("/api/v2/people", people);
-app.use("/api/v2/users", users);
-app.use("/api/v2/auth", auth);
+// app.use("/api/v2/users", users);
+// app.use("/api/v2/auth", auth);
 
 app.use(errorHandler);
 
@@ -127,7 +127,7 @@ app.get("/api/v2/docs", (req: Request, res: Response) => {
 
 // "Home" request
 app.get("/", (req: Request, res: Response) => {
-  res.send("BEAM Demo API");
+  res.send("BEAM Auth0 API");
 });
 
 // All other requests

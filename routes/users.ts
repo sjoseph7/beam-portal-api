@@ -15,19 +15,19 @@ import {
 } from "../api/controllers/users";
 import { advancedResults } from "../middleware/advancedResults";
 import { ErrorResponse } from "../api/utils/errorResponse";
-import { authenticate, authorize } from "../middleware/auth";
+import { checkJwt, checkPermissions } from "../middleware/jwtAuth";
 
 const router = Router();
 
 router
   .route("/:id")
   .get(getUser)
-  .patch(authenticate, authorize("admin"), updateUser)
-  .delete(authenticate, authorize("admin"), deleteUser);
+  .patch(checkJwt, checkPermissions("admin"), updateUser)
+  .delete(checkJwt, checkPermissions("admin"), deleteUser);
 
 router
   .route("/")
-  .get(authenticate, authorize("admin"), advancedResults(User, ""), getUsers)
-  .post(authenticate, authorize("admin"), createUser);
+  .get(checkJwt, checkPermissions("admin"), advancedResults(User, ""), getUsers)
+  .post(checkJwt, checkPermissions("admin"), createUser);
 
 export default router;

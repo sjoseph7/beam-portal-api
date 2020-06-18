@@ -6,7 +6,6 @@
 
 import { Router, Request, Response, NextFunction } from "express";
 import { advancedResults } from "../middleware/advancedResults";
-import { authenticate, authorize } from "../middleware/auth";
 import { ErrorResponse } from "../api/utils/errorResponse";
 import { Region } from "../api/models/Region";
 import {
@@ -16,23 +15,24 @@ import {
   updateRegion,
   deleteRegion
 } from "../api/controllers/regions";
+import { checkJwt, checkPermissions } from "../middleware/jwtAuth";
 
 const router = Router();
 
 router
   .route("/:id")
-  .get(authenticate, authorize("student", "instructor", "admin"), getRegion)
-  .patch(authenticate, authorize("admin"), updateRegion)
-  .delete(authenticate, authorize("admin"), deleteRegion);
+  .get(checkJwt, checkPermissions("student", "instructor", "admin"), getRegion)
+  .patch(checkJwt, checkPermissions("admin"), updateRegion)
+  .delete(checkJwt, checkPermissions("admin"), deleteRegion);
 
 router
   .route("/")
   .get(
-    authenticate,
-    authorize("student", "instructor", "admin"),
+    checkJwt,
+    checkPermissions("student", "instructor", "admin"),
     advancedResults(Region, ""),
     getRegions
   )
-  .post(authenticate, authorize("instructor", "admin"), createRegion);
+  .post(checkJwt, checkPermissions("instructor", "admin"), createRegion);
 
 export default router;

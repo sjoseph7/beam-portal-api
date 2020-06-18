@@ -1,4 +1,3 @@
-import { authenticate, authorize } from "../middleware/auth";
 import {
   register,
   login,
@@ -10,27 +9,21 @@ import {
   forgotPassword,
   resetPassword
 } from "../api/controllers/auth";
-import { Router, Request, Response, NextFunction } from "express";
-import { ErrorResponse } from "../api/utils/errorResponse";
+import { Router } from "express";
+import { checkJwt, checkPermissions } from "../middleware/jwtAuth";
 
 const router = Router();
 
 router.post("/register", register);
 router.post("/login", login);
-router.post("/logout", authenticate, logout);
+router.post("/logout", checkJwt, logout);
 
-router
-  .route("/details")
-  .get(authenticate, whoAmI)
-  .patch(authenticate, udpateDetails);
+router.route("/details").get(checkJwt, whoAmI).patch(checkJwt, udpateDetails);
 
-router.patch("/role", authenticate, authorize("admin"), updateRole);
+router.patch("/role", checkJwt, checkPermissions("admin"), updateRole);
 
 router.patch("/password/:resettoken", resetPassword);
 
-router
-  .route("/password")
-  .post(forgotPassword)
-  .patch(authenticate, updatePassword);
+router.route("/password").post(forgotPassword).patch(checkJwt, updatePassword);
 
 export default router;

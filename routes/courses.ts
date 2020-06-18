@@ -4,9 +4,9 @@
  * @desc These are routes for courses.
  */
 
+import jwtAuthz from "express-jwt-authz";
 import { Router, Request, Response, NextFunction } from "express";
 import { advancedResults } from "../middleware/advancedResults";
-import { authenticate, authorize } from "../middleware/auth";
 import { ErrorResponse } from "../api/utils/errorResponse";
 import { Course } from "../api/models/Course";
 import {
@@ -16,23 +16,24 @@ import {
   updateCourse,
   deleteCourse
 } from "../api/controllers/courses";
+import { checkJwt, checkPermissions } from "../middleware/jwtAuth";
 
 const router = Router();
 
 router
   .route("/:id")
-  .get(authenticate, authorize("student", "instructor", "admin"), getCourse)
-  .patch(authenticate, authorize("admin"), updateCourse)
-  .delete(authenticate, authorize("admin"), deleteCourse);
+  .get(checkJwt, checkPermissions("student"), getCourse)
+  .patch(checkJwt, checkPermissions("admin"), updateCourse)
+  .delete(checkJwt, checkPermissions("admin"), deleteCourse);
 
 router
   .route("/")
   .get(
-    authenticate,
-    authorize("student", "instructor", "admin"),
+    checkJwt,
+    checkPermissions("student", "instructor", "admin"),
     advancedResults(Course, ""),
     getCourses
   )
-  .post(authenticate, authorize("instructor", "admin"), createCourse);
+  .post(checkJwt, checkPermissions("instructor", "admin"), createCourse);
 
 export default router;
