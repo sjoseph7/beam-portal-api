@@ -14,12 +14,12 @@ export const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `${process.env.JWT_DOMAIN}/.well-known/jwks.json`
+    jwksUri: `${process.env.JWT_ISSUER}/.well-known/jwks.json`
   }),
 
   // Validate the audience and the issuer.
   audience: process.env.JWT_AUDIENCE,
-  issuer: process.env.JWT_ISSUER,
+  issuer: `${process.env.JWT_ISSUER}/`,
   algorithms: ["RS256"]
 });
 
