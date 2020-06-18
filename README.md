@@ -1,3 +1,4 @@
-# DEMO API
+# BEAM AUTH0 API
 
-That's all for now.
+Upgraded for Auth0:
+Identity is Complex. Deal with it.
