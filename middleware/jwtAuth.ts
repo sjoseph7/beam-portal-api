@@ -26,10 +26,10 @@ export const checkJwt = jwt({
 export const checkPermissions = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     // Reject users with invalid roles
-    const intersections = req.user.permissions.filter((permission: any) =>
+    const intersections = req.user?.permissions?.filter((permission: any) =>
       roles.includes(permission)
     );
-    if (intersections.length === 0) {
+    if (!intersections || intersections?.length === 0) {
       return next(
         new ErrorResponse(`Not authorized to access this route`, 403)
       );
