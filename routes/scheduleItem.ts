@@ -26,8 +26,12 @@ router
     checkPermissions("student", "instructor", "admin"),
     getScheduleItem
   )
-  .patch(checkJwt, checkPermissions("admin"), updateScheduleItem)
-  .delete(checkJwt, checkPermissions("admin"), deleteScheduleItem);
+  .patch(checkJwt, checkPermissions("instructor", "admin"), updateScheduleItem)
+  .delete(
+    checkJwt,
+    checkPermissions("instructor", "admin"),
+    deleteScheduleItem
+  );
 
 router
   .route("/")

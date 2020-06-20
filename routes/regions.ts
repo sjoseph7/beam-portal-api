@@ -33,6 +33,6 @@ router
     advancedResults(Region, ""),
     getRegions
   )
-  .post(checkJwt, checkPermissions("instructor", "admin"), createRegion);
+  .post(checkJwt, checkPermissions("admin"), createRegion);
 
 export default router;

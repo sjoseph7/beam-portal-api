@@ -33,10 +33,6 @@ router
     advancedResults(Person, "meetingsAsHost meetingsAsParticipant"),
     getPeople
   )
-  .post(
-    checkJwt,
-    checkPermissions("student", "instructor", "admin"),
-    createPerson
-  );
+  .post(checkJwt, checkPermissions("admin"), createPerson);
 
 export default router;
