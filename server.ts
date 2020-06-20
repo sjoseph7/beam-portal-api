@@ -135,7 +135,6 @@ app.all("/api/v2*", (req, res, next) => {
 app.use("/api/v3/schedule-items", scheduleItem);
 app.use("/api/v3/announcements", announcements);
 app.use("/api/v3/regions", regions);
-app.use("/api/v3/courses", courses);
 app.use("/api/v3/people", people);
 
 app.use(errorHandler);
