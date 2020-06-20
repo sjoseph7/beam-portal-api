@@ -36,20 +36,6 @@ export const getPerson = asyncHandler(
 // @access  Private
 export const createPerson = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    // Check for other people (can only person a post or comment once! - unless admin)
-    const otherPerson = await Person.findOne({
-      author: req.user.id,
-      parent: req.body.parent
-    });
-    if (otherPerson && req.user.role !== "admin") {
-      console.info(otherPerson);
-      return next(
-        new ErrorResponse(
-          `User has already has person`, // ${otherPerson.parentModel}`,
-          400
-        )
-      );
-    }
     // Create new person
     let newPerson = await Person.create(req.body);
     res.status(201).json({ success: true, data: newPerson });
