@@ -21,12 +21,10 @@ const AnnouncementSchema = new Schema(
       maxlength: 500
     },
     regions: {
-      type: [Types.ObjectId],
-      ref: "region"
+      type: [{ type: Types.ObjectId, ref: "region" }]
     },
     recipients: {
-      type: [Types.ObjectId],
-      ref: "person"
+      type: [{ type: Types.ObjectId, ref: "person" }]
     }
   },
   {
