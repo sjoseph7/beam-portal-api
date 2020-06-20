@@ -40,16 +40,9 @@ export const checkPermissions = (...roles: string[]) => {
     // Get user role
     const token = req.headers.authorization?.split(" ")[1] || "";
     const userId = await verify_token(token);
-    console.debug("userid:", userId);
-
-    console.debug("user:", req.user);
-    const intersections =
-      req.user?.permissions?.filter((permission: any) =>
-        roles.includes(permission)
-      ) || [];
 
     // Reject users with invalid permissions
-    if (intersections.length === 0) {
+    if (!roles.includes(userId.role)) {
       return next(
         new ErrorResponse(`Not authorized to access this route`, 403)
       );
@@ -69,7 +62,6 @@ export async function verify_token(token: string) {
   const key = (await getPubKey(header.kid)).getPublicKey();
 
   const identity = jwt.verify(token, key, AUTH0_JWT_OPTIONS) as Identity;
-  console.log("identity:", identity);
 
   const {
     "https://beammath.net/username": username,
