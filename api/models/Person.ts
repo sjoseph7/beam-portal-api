@@ -6,6 +6,7 @@
 
 import { Schema, model, Types, HookNextFunction } from "mongoose";
 import { IPerson } from "../interfaces/IPerson";
+import { arrayLengthLimits } from "../utils/arrayLengthLimits";
 
 const PersonSchema = new Schema(
   {
@@ -34,10 +35,10 @@ const PersonSchema = new Schema(
       lowercase: true,
       required: [true, "no person type specified"]
     },
-    region: {
-      type: String,
-      ref: "region",
-      required: [true, "no region specified"]
+    regions: {
+      type: [{ type: Types.ObjectId, ref: "region" }],
+      required: [true, "no region(s) specified"],
+      validate: [arrayLengthLimits(1), "must list at least one region"]
     }
   },
   {

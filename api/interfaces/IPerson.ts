@@ -5,7 +5,7 @@ export interface IPerson extends Document {
   lastName: string;
   username?: string;
   type?: string;
-  region: Types.ObjectId;
+  regions: [Types.ObjectId];
   coursesAsInstructor?: [Types.ObjectId];
   coursesAsStudent?: [Types.ObjectId];
   scheduleItemsAsHost?: [Types.ObjectId];
