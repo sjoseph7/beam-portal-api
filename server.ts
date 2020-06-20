@@ -97,8 +97,8 @@ app.get("/api/v1/v2/migration", (req: Request, res: Response) => {
   res.sendFile(`${process.cwd()}/public/migration/v1$v2.html`);
 });
 
-// Catch all deprecation error
-app.all("/api/v1/*", (req, res, next) => {
+// Catch-all deprecation error
+app.all("/api/v1*", (req, res, next) => {
   res.status(301).json({
     success: false,
     error: {
@@ -110,24 +110,44 @@ app.all("/api/v1/*", (req, res, next) => {
 });
 
 // ==== API_v2 ==== //
-app.use("/api/v2/schedule-items", scheduleItem);
-app.use("/api/v2/announcements", announcements);
-app.use("/api/v2/regions", regions);
-app.use("/api/v2/courses", courses);
-app.use("/api/v2/people", people);
-// app.use("/api/v2/users", users);
-// app.use("/api/v2/auth", auth);
-
-app.use(errorHandler);
-
-// API_v2 docs
+// "docs" request
 app.get("/api/v2/docs", (req: Request, res: Response) => {
   res.sendFile(`${process.cwd()}/public/docs/docs-v2.html`);
 });
 
+app.get("/api/v2/v3/migration", (req: Request, res: Response) => {
+  res.sendFile(`${process.cwd()}/public/migration/v2$v3.html`);
+});
+
+// Catch-all deprecation error
+app.all("/api/v2*", (req, res, next) => {
+  res.status(301).json({
+    success: false,
+    error: {
+      message: "api/v2 has been deprecated, please use api/v3 instead.",
+      docs: "/api/v3/docs",
+      migrationGuide: "/api/v2/v3/migration"
+    }
+  });
+});
+
+// ==== API_v3 ==== //
+app.use("/api/v3/schedule-items", scheduleItem);
+app.use("/api/v3/announcements", announcements);
+app.use("/api/v3/regions", regions);
+app.use("/api/v3/courses", courses);
+app.use("/api/v3/people", people);
+
+app.use(errorHandler);
+
+// API_v2 docs
+app.get("/api/v3/docs", (req: Request, res: Response) => {
+  res.sendFile(`${process.cwd()}/public/docs/docs-v3.html`);
+});
+
 // "Home" request
 app.get("/", (req: Request, res: Response) => {
-  res.send("BEAM Auth0 API");
+  res.send("BEAM Auth0 API - v3.0");
 });
 
 // All other requests
