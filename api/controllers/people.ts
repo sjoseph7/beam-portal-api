@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { ErrorResponse } from "../utils/errorResponse";
 import { asyncHandler } from "../../middleware/async";
 import { Person } from "../models/Person";
+import { Region } from "../models/Region";
 
 // @desc    Get all people
 // @route   GET /api/v2/people
@@ -20,9 +21,16 @@ export const getPeople = asyncHandler(
 // @access  Public
 export const getPerson = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    // Check if (person requested === user making request)
+    const userMakingRequest = req.user?.sub.split("|")[1];
+    if (req.user && req.params.id === userMakingRequest) {
+      await refreshProfileFromToken(req.user || {});
+    }
+
+    // Find person
     const person = await Person.findById(req.params.id);
 
-    //No person found...
+    // If no person found...
     if (!person) {
       return next(new ErrorResponse(`Resource not found`, 404));
     }
@@ -94,3 +102,39 @@ export const deletePerson = asyncHandler(
     res.status(200).json({ success: true, data: {} });
   }
 );
+
+async function refreshProfileFromToken(user: any) {
+  const {
+    "https://beammath.net/given_name": firstName,
+    "https://beammath.net/family_name": lastName,
+    "https://beammath.net/username": username,
+    "https://beammath.net/role": type,
+    "https://beammath.net/sites": regionNames
+  } = user || {};
+
+  // Get user ID
+  const userMakingRequest = user?.sub.split("|")[1];
+  if (!userMakingRequest) {
+    return;
+  }
+
+  // Translate region names into _ids
+  const regions = (await Region.find({ name: { $in: regionNames } })).map(
+    region => region._id
+  );
+
+  // Create person
+  const newPerson: any = {
+    _id: userMakingRequest,
+    firstName,
+    lastName,
+    username,
+    type,
+    regions
+  };
+
+  // Save to db (or update, they they already exist)
+  await Person.updateOne({ _id: userMakingRequest }, newPerson, {
+    upsert: true
+  });
+}
