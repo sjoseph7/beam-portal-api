@@ -41,6 +41,7 @@ router
     advancedResults(Announcement, ""),
     getAnnouncements
   )
+  // .post(checkJwt, checkPermissions("instructor", "admin"), createAnnouncement);
   .post(checkJwt, checkPermissions("instructor", "admin"), createAnnouncement);
 
 export default router;
