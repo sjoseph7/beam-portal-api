@@ -30,10 +30,7 @@ router
   .get(
     checkJwt,
     checkPermissions("student", "instructor", "admin"),
-    advancedResults(
-      Person,
-      "coursesAsInstructor coursesAsStudent meetingsAsHost meetingsAsParticipant"
-    ),
+    advancedResults(Person, "meetingsAsHost meetingsAsParticipant"),
     getPeople
   )
   .post(
