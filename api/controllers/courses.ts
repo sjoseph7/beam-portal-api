@@ -24,7 +24,7 @@ export const getCourses = asyncHandler(
 export const getCourse = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const course = await Course.findById(req.params.id);
-    console.debug("USER:", req.user);
+
     //No course found...
     if (!course) {
       return next(new ErrorResponse(`Resource not found`, 404));
