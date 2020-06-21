@@ -1,13 +1,17 @@
 import axios from "axios";
 import { Request, Response } from "express";
+import { getUser } from "../../middleware/jwtAuth";
 
 const OPENLEARNING_API_URL = "https://api.openlearning.com/v2.1";
 const OPENLEARNING_AUTH_QUERY = `?api_key=${process.env.OPENLEARNING_API_KEY}`;
 
 export async function getUserSsoUrl(req: Request, res: Response) {
-  const username = req.params.username || "";
   try {
-    // Convert usernam into userId
+    // Get username from token
+    const token = req.headers.authorization?.split(" ")[1] || "";
+    const { username } = await getUser(token);
+
+    // Convert username into userId
     const user_id = await getUserId(username).catch(err => {
       throw Error(`unable to get user id for ${username}`);
     });

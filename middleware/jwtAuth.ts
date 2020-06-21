@@ -39,10 +39,10 @@ export const checkPermissions = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     // Get user role
     const token = req.headers.authorization?.split(" ")[1] || "";
-    const userId = await verify_token(token);
+    const user = await getUser(token);
 
     // Reject users with invalid permissions
-    if (!roles.includes(userId.role)) {
+    if (!roles.includes(user.role)) {
       return next(
         new ErrorResponse(`Not authorized to access this route`, 403)
       );
@@ -56,7 +56,7 @@ type Identity = Record<string, string> & {
   "https://beammath.net/sites": string[];
 };
 
-export async function verify_token(token: string) {
+export async function getUser(token: string) {
   // @ts-ignore
   const header = jwt.decode(token, { complete: true }).header;
   const key = (await getPubKey(header.kid)).getPublicKey();
