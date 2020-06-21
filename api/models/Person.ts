@@ -23,15 +23,13 @@ const PersonSchema = new Schema(
       maxlength: [100, "last name cannot exceed 100 characters"]
     },
     username: {
-      // read-only (updated when user username is updated)
       type: String,
       trim: true,
       required: [true, "no username provided"]
     },
     type: {
-      // read-only (updated when user role is updated)
       type: String,
-      enum: ["student", "instructor", "admin"],
+      enum: ["student", "instructor", "staff", "admin"],
       lowercase: true,
       required: [true, "no person type specified"]
     },
