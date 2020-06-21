@@ -9,9 +9,10 @@ table {
 table, th, td {
   border: 1px solid black;
 }</style></head><body><h1 id="migration-guide-api_v2-api_v3">MIGRATION GUIDE: API_v2 --&gt; API_v3</h1>
-<p>@author: sjoseph7<br>@created: 20 June 2020</p>
-<p>This version bump resulted from a move to auth0 compatibility.
-Resource changes:</p>
+<p>@author: sjoseph7<br>@created: 20 June 2020
+@last-updated: 21 June 2020 by sjoseph7</p>
+<p>This version bump resulted from a move to auth0 compatibility.</p>
+<p>Resource changes:</p>
 <ul>
 <li>All previous &#39;auth&#39; resources (<code>auth</code>, <code>users</code>) were deprecated.</li>
 <li><code>courses</code> resource was deprecated.</li>
@@ -21,7 +22,7 @@ Resource changes:</p>
 <h2 id="resources">Resources</h2>
 <hr>
 <h3 id="announcements">Announcements</h3>
-<p><em>This resource represents region- or student-specific <code>announcement</code>s at the top of the student portal. As long as this resource exists in th db, the <code>announcement</code> will be present.</em></p>
+<p><em>This resource represents region- or student-specific <code>announcement</code>s at the top of the student portal. As long as this resource exists in the database, the <code>announcement</code> will be present.</em></p>
 <p><strong>Schema</strong> [NO CHANGE]</p>
 <pre><code class="lang-ts">{
   <span class="hljs-attribute">title</span>: <span class="hljs-string">"WELCOME_ANNOUNCEMENT_LA"</span>,
@@ -104,12 +105,12 @@ Resource changes:</p>
 <tr>
 <td>type</td>
 <td>string</td>
-<td>Type of user (student, instructor, admin)</td>
+<td>Type of user (student, instructor, staff, admin)</td>
 </tr>
 <tr>
 <td><del>region</del></td>
 <td><del>objectId</del></td>
-<td><strong>(deprecated, replaced by <code>regions</code>)</strong></td>
+<td><strong>(Deprecated, replaced by <code>regions</code>)</strong></td>
 </tr>
 <tr>
 <td>regions</td>
