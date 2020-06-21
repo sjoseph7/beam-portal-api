@@ -20,6 +20,7 @@ import helmet from "helmet";
 import cors from "cors";
 import path from "path";
 import hpp from "hpp";
+import { getUserSsoUrl } from "./api/controllers/sso";
 
 // ^1
 // Augment Express Request and Response Type definitions
@@ -137,9 +138,13 @@ app.use("/api/v3/announcements", announcements);
 app.use("/api/v3/regions", regions);
 app.use("/api/v3/people", people);
 
+// Open-Learning SSO request
+app.get("/api/v3/sso/open-learning/:username", getUserSsoUrl);
+
+// Error Handler
 app.use(errorHandler);
 
-// API_v2 docs
+// API_v3 docs
 app.get("/api/v3/docs", (req: Request, res: Response) => {
   res.sendFile(`${process.cwd()}/public/docs/docs-v3.html`);
 });
