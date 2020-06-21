@@ -1,17 +1,344 @@
-<!DOCTYPE html>
-<html lang="en">
+<html><head><style>body {
+   color: black;
+}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>v2 --> v3 Migration Guide</title>
-</head>
+table {
+  border-collapse: collapse;
+}
 
-<body>
-  <!-- Converted with (https://markdowntohtml.com/) -->
-  <h1 id="migration-guide-api_v1-api_v2">MIGRATION GUIDE: API_v2 --&gt; API_v3</h1>
-  <p>@author: sjoseph7<br>@created: 19 June 2020</p>
-  <h2>// ---- TBD ---- //</h2>
-</body>
-
-</html>
+table, th, td {
+  border: 1px solid black;
+}</style></head><body><h1 id="migration-guide-api_v2-api_v3">MIGRATION GUIDE: API_v2 --&gt; API_v3</h1>
+<p>@author: sjoseph7<br>@created: 20 June 2020</p>
+<p>This version bump resulted from a move to auth0 compatibility.
+Resource changes:</p>
+<ul>
+<li>All previous &#39;auth&#39; resources (<code>auth</code>, <code>users</code>) were deprecated.</li>
+<li><code>courses</code> resource was deprecated.</li>
+<li><code>people</code> can now belong to multiple <code>region</code>s</li>
+<li><code>people</code> no longer have &quot;coursesAsInstructor&quot; or &quot;coursesAsStudent&quot; properties (because courses are deprecated)</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<hr>
+<h3 id="announcements">Announcements</h3>
+<p><em>This resource represents region- or student-specific <code>announcement</code>s at the top of the student portal. As long as this resource exists in th db, the <code>announcement</code> will be present.</em></p>
+<p><strong>Schema</strong> [NO CHANGE]</p>
+<pre><code class="lang-ts">{
+  <span class="hljs-attribute">title</span>: <span class="hljs-string">"WELCOME_ANNOUNCEMENT_LA"</span>,
+  message: <span class="hljs-string">"Welcome to LA!"</span>,
+  regions: [<span class="hljs-string">"6dc4fc8194f68a3cbc7c69a1"</span>],
+  recipients: []
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>Admin-friendly name for the <code>announcement</code></td>
+</tr>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>The actual message that shows up on the student portal</td>
+</tr>
+<tr>
+<td>regions</td>
+<td>[ objectIds ]</td>
+<td>List of <code>region</code>s that should see the <code>announcement</code></td>
+</tr>
+<tr>
+<td>recipients</td>
+<td>[ objectIds ]</td>
+<td>List of <em>specific</em> <code>people</code> that should see the <code>announcement</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>NOTE: the <code>region</code> and recipient fields operate on order of increased specificity. If an <code>announcement</code> targets an entire <code>region</code>, leave the recipients array empty - if any recipient is listed, the <code>announcement</code> will only go to the listed recipient(s).</em></p>
+<hr>
+<h3 id="people">People</h3>
+<p><em>This resource is used to quickly populate queries for <code>schedule-item</code>s with names of students and instructors</em></p>
+<p><strong>Schema</strong> [One (1) CHANGE]</p>
+<ul>
+<li>region -&gt; regions</li>
+</ul>
+<pre><code class="lang-ts">{
+<span class="hljs-symbol">  firstName:</span> <span class="hljs-string">"John"</span>,
+<span class="hljs-symbol">  lastName:</span> <span class="hljs-string">"Doe"</span>,
+<span class="hljs-symbol">  username:</span> <span class="hljs-string">"john_doe_123"</span>,
+<span class="hljs-symbol">  type:</span> <span class="hljs-string">"student"</span>,
+<span class="hljs-symbol">  regions:</span> [<span class="hljs-string">"6dc4fc8194f68a3cbc7c69a1"</span>]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>firstName</td>
+<td>string</td>
+<td>User&#39;s given_name</td>
+</tr>
+<tr>
+<td>lastName</td>
+<td>string</td>
+<td>User&#39;s family_name</td>
+</tr>
+<tr>
+<td>username</td>
+<td>string</td>
+<td>User&#39;s username</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>Type of user (student, instructor, admin)</td>
+</tr>
+<tr>
+<td><del>region</del></td>
+<td><del>objectId</del></td>
+<td><strong>(deprecated, replaced by <code>regions</code>)</strong></td>
+</tr>
+<tr>
+<td>regions</td>
+<td>[ objectIds ]</td>
+<td>User&#39;s operating <code>region</code>(s)</td>
+</tr>
+<tr>
+<td><del>coursesAsInstructor</del></td>
+<td><del>[ objectIds ]</del></td>
+<td><strong>(Deprecated because courses have been deprecated)</strong></td>
+</tr>
+<tr>
+<td><del>coursesAsStudent</del></td>
+<td><del>[ objectIds ]</del></td>
+<td><strong>(Deprecated because courses have been deprecated)</strong></td>
+</tr>
+<tr>
+<td>**scheduleItemsAsHost</td>
+<td>[ objectIds ] (**virtual getter)</td>
+<td><code>schedule-item</code>s hosted by this person (automatically populated as <code>schedule-item</code>s)</td>
+</tr>
+<tr>
+<td>**scheduleItemsAsParticipant</td>
+<td>[ objectIds ] (**virtual getter)</td>
+<td><code>schedule-item</code>s where this person is listed as a participant (automatically populated as <code>schedule-item</code>s)</td>
+</tr>
+</tbody>
+</table>
+<p><em>NOTE: When something needs to render <code>region</code> specific content, the first <code>region</code> in the array is used.</em></p>
+<hr>
+<h3 id="region">Region</h3>
+<p><em>This resource maintains <code>region</code> specific site content.</em></p>
+<p><strong>Schema</strong> [NO CHANGE]</p>
+<pre><code class="lang-ts">{
+<span class="hljs-symbol">  name:</span> <span class="hljs-string">"DISCOVERY_LA"</span>,
+<span class="hljs-symbol">  address:</span> <span class="hljs-string">"123 Main St., Los Angeles, Ca"</span>,
+<span class="hljs-symbol">  siteContent:</span> {
+<span class="hljs-symbol">    title:</span> <span class="hljs-string">"Welcome to BEAM LA!"</span>,
+<span class="hljs-symbol">    subTitle:</span> <span class="hljs-string">"We're so excited you're here"</span>,
+<span class="hljs-symbol">    links:</span> [{
+<span class="hljs-symbol">      text:</span> <span class="hljs-string">"Zulip Chat"</span>,
+<span class="hljs-symbol">      type:</span> <span class="hljs-string">"helpful"</span>,
+<span class="hljs-symbol">      url:</span> <span class="hljs-string">"http://zulip.com/chat-link"</span>,
+    }],
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Human-friendly name of <code>region</code> (e.g. DISCOVERY_LA)</td>
+</tr>
+<tr>
+<td>address</td>
+<td>string</td>
+<td>Address of BEAM site</td>
+</tr>
+<tr>
+<td>siteContent</td>
+<td>object</td>
+<td>Grouping of site content</td>
+</tr>
+<tr>
+<td><em>siteContent</em>.title</td>
+<td>string</td>
+<td>Main header site message</td>
+</tr>
+<tr>
+<td><em>siteContent</em>.subTitle</td>
+<td>string</td>
+<td>Sub-header site message</td>
+</tr>
+<tr>
+<td><em>siteContent</em>.links</td>
+<td>[ objects ]</td>
+<td>Grouping of site links</td>
+</tr>
+<tr>
+<td><em>siteContent</em>.<em>link</em>.text</td>
+<td>string</td>
+<td>Link text</td>
+</tr>
+<tr>
+<td><em>siteContent</em>.<em>link</em>.type</td>
+<td>string</td>
+<td>Type of link (helpful, need-help)</td>
+</tr>
+<tr>
+<td><em>siteContent</em>.<em>link</em>.url</td>
+<td>string</td>
+<td>Link url</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="scheduleitems">ScheduleItems</h3>
+<p><em>This resource represents an item on a <code>person</code> or <code>people</code>&#39;s schedule(s) within a specific <code>region</code>.</em></p>
+<p><strong>Schema</strong> [NO CHANGE]</p>
+<pre><code class="lang-ts">{
+<span class="hljs-symbol">  name:</span> <span class="hljs-string">"Open Math Time"</span>,
+<span class="hljs-symbol">  description:</span> <span class="hljs-string">"Math is fun!"</span>,
+<span class="hljs-symbol">  note:</span> <span class="hljs-string">"Optional the first week, required for the rest of the program"</span>
+<span class="hljs-symbol">  region:</span> <span class="hljs-string">"6dc4fc8194f68a3cbc7c69a1"</span>
+<span class="hljs-symbol">  days:</span> [<span class="hljs-string">"monday"</span>, <span class="hljs-string">"tuesday"</span>, <span class="hljs-string">"thursday"</span>, <span class="hljs-string">"friday"</span>],
+<span class="hljs-symbol">  startTime:</span> {
+<span class="hljs-symbol">    hour:</span> <span class="hljs-number">9</span>,
+<span class="hljs-symbol">    minute:</span> <span class="hljs-number">35</span>
+  },
+<span class="hljs-symbol">  endTime:</span> {
+<span class="hljs-symbol">    hour:</span> <span class="hljs-number">10</span>,
+<span class="hljs-symbol">    minute:</span> <span class="hljs-number">15</span>
+  },
+<span class="hljs-symbol">  hosts:</span> [<span class="hljs-string">"2dc4fc8194f68a3cbc7c69a3"</span>,<span class="hljs-string">"2dc4fc8194f68a3cbc7c69a4"</span>],
+<span class="hljs-symbol">  participants:</span> [], <span class="hljs-comment">// empty because this is region-wide</span>
+<span class="hljs-symbol">  links:</span> [{
+<span class="hljs-symbol">      text:</span> <span class="hljs-string">"Carol's Room"</span>,
+<span class="hljs-symbol">      type:</span> <span class="hljs-string">"adobe-connect"</span>,
+<span class="hljs-symbol">      url:</span> <span class="hljs-string">"http://zulip.com/carols-room"</span>,
+    },{
+<span class="hljs-symbol">      text:</span> <span class="hljs-string">"Daniel's Room"</span>,
+<span class="hljs-symbol">      type:</span> <span class="hljs-string">"adobe-connect"</span>,
+<span class="hljs-symbol">      url:</span> <span class="hljs-string">"http://zulip.com/daniels-room"</span>,
+  }]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Name displayed to user</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>Description of <code>schedule-item</code></td>
+</tr>
+<tr>
+<td>note</td>
+<td>string</td>
+<td>Used for info like &#39;optional&#39; or &#39;required for a week&#39;;</td>
+</tr>
+<tr>
+<td>region</td>
+<td>objectId</td>
+<td>Specifies <code>region</code>-wide <code>schedule-item</code> (only if no participants are listed)</td>
+</tr>
+<tr>
+<td>days</td>
+<td>string</td>
+<td>Day(s) when this <code>schedule-item</code> should show up on a schedule (can list all seven (7) days)</td>
+</tr>
+<tr>
+<td>startTime</td>
+<td>object</td>
+<td>Grouping of starting hour and minute</td>
+</tr>
+<tr>
+<td>startTime.hour</td>
+<td>string</td>
+<td>Starting hour; 0-23</td>
+</tr>
+<tr>
+<td>startTime.minute</td>
+<td>string</td>
+<td>Starting minute; 0-59</td>
+</tr>
+<tr>
+<td>endTime</td>
+<td>object</td>
+<td>Grouping of ending hour and minute</td>
+</tr>
+<tr>
+<td>endTime.hour</td>
+<td>string</td>
+<td>Starting hour; 0-23</td>
+</tr>
+<tr>
+<td>endTime.minute</td>
+<td>string</td>
+<td>Starting minute; 0-59</td>
+</tr>
+<tr>
+<td>hosts</td>
+<td>[ objectId ]</td>
+<td><code>Person</code> or <code>people</code> hosting the schedule-item; at least one host must be specified</td>
+</tr>
+<tr>
+<td>participants</td>
+<td>[ objectId ]</td>
+<td><code>Person</code> or <code>people</code> participating in the schedule-item</td>
+</tr>
+<tr>
+<td>links</td>
+<td>[ objects ]</td>
+<td>Grouping of site links</td>
+</tr>
+<tr>
+<td><em>link</em>.text</td>
+<td>string</td>
+<td>Link text</td>
+</tr>
+<tr>
+<td><em>link</em>.type</td>
+<td>string</td>
+<td>Type of link (adobe-connect, open-learning)</td>
+</tr>
+<tr>
+<td><em>link</em>.url</td>
+<td>string</td>
+<td>Link url</td>
+</tr>
+</tbody>
+</table>
+<p><em>NOTE: the <code>region</code> and participants fields operate on order of increased specificity. If a <code>schedule-item</code> targets an entire <code>region</code>, leave the participants array empty - if any participant is listed, the <code>schedule-item</code> will only go to the listed participant(s).</em></p>
+</body></html>
