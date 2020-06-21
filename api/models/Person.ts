@@ -48,18 +48,6 @@ const PersonSchema = new Schema(
   }
 );
 
-PersonSchema.virtual("coursesAsInstructor", {
-  ref: "course",
-  localField: "_id",
-  foreignField: "instructors"
-});
-
-PersonSchema.virtual("coursesAsStudent", {
-  ref: "course",
-  localField: "_id",
-  foreignField: "students"
-});
-
 PersonSchema.virtual("scheduleItemsAsHost", {
   ref: "schedule-item",
   localField: "_id",
