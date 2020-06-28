@@ -17,18 +17,28 @@
 <p class="has-line-data" data-line-start="22" data-line-end="23"><em>This version bump adds more functionality to ScheduleItems.</em></p>
 <p class="has-line-data" data-line-start="24" data-line-end="25">Resource changes:</p>
 <ul>
-<li class="has-line-data" data-line-start="26" data-line-end="27"><em>startDate</em> is used to indicate when a <code>schedule-item</code> should appear on a schedule.</li>
-<li class="has-line-data" data-line-start="27" data-line-end="28"><em>endDate</em> is used to indicate when a <code>schedule-item</code> should no longer appear on a schedule.</li>
-<li class="has-line-data" data-line-start="28" data-line-end="29"><em>altHost</em> is a string field used to display an arbitrary host name.</li>
-<li class="has-line-data" data-line-start="29" data-line-end="30"><em>friendlyId</em> is an admin-friendly field for easily referencing schedule items.</li>
-<li class="has-line-data" data-line-start="30" data-line-end="32">The minimum host limit of one (1) has been removed.</li>
+<li class="has-line-data" data-line-start="26" data-line-end="33">
+<p class="has-line-data" data-line-start="26" data-line-end="27">Added to <code>schedule-item</code>:</p>
+<ul>
+<li class="has-line-data" data-line-start="28" data-line-end="29"><em>startDate</em> is used to indicate when a <code>schedule-item</code> should appear on a schedule.</li>
+<li class="has-line-data" data-line-start="29" data-line-end="30"><em>endDate</em> is used to indicate when a <code>schedule-item</code> should no longer appear on a schedule.</li>
+<li class="has-line-data" data-line-start="30" data-line-end="31"><em>altHost</em> is a string field used to display an arbitrary host name.</li>
+<li class="has-line-data" data-line-start="31" data-line-end="33"><em>friendlyId</em> is an admin-friendly field for easily referencing <code>schedule-item</code>s.</li>
 </ul>
-<h2 class="code-line" data-line-start=32 data-line-end=33><a id="Resources_32"></a>Resources</h2>
+</li>
+<li class="has-line-data" data-line-start="33" data-line-end="36">
+<p class="has-line-data" data-line-start="33" data-line-end="34">Removed from <code>schedule-item</code>:</p>
+<ul>
+<li class="has-line-data" data-line-start="34" data-line-end="36">The minimum host limit of one (1) has been removed on <code>schedule-item</code>s.</li>
+</ul>
+</li>
+</ul>
+<h2 class="code-line" data-line-start=36 data-line-end=37><a id="Resources_36"></a>Resources</h2>
 <hr>
-<h3 class="code-line" data-line-start=36 data-line-end=37><a id="Announcements_36"></a>Announcements</h3>
-<p class="has-line-data" data-line-start="38" data-line-end="39"><em>This resource represents region- or student-specific <code>announcement</code>s at the top of the student portal. As long as this resource exists in the database, the <code>announcement</code> will be present.</em></p>
-<p class="has-line-data" data-line-start="40" data-line-end="41"><strong>Schema</strong> [NO CHANGE]</p>
-<pre><code class="has-line-data" data-line-start="43" data-line-end="50" class="language-js">{
+<h3 class="code-line" data-line-start=40 data-line-end=41><a id="Announcements_40"></a>Announcements</h3>
+<p class="has-line-data" data-line-start="42" data-line-end="43"><em>This resource represents region- or student-specific <code>announcement</code>s at the top of the student portal. As long as this resource exists in the database, the <code>announcement</code> will be present.</em></p>
+<p class="has-line-data" data-line-start="44" data-line-end="45"><strong>Schema</strong> [NO CHANGE]</p>
+<pre><code class="has-line-data" data-line-start="47" data-line-end="54" class="language-js">{
   title: <span class="hljs-string">"WELCOME_ANNOUNCEMENT_LA"</span>,
   message: <span class="hljs-string">"Welcome to LA!"</span>,
   regions: [<span class="hljs-string">"6dc4fc8194f68a3cbc7c69a1"</span>],
@@ -67,16 +77,16 @@
 </tbody>
 </table>
 <blockquote>
-<p class="has-line-data" data-line-start="58" data-line-end="59"><em>NOTE: the <code>region</code> and recipient fields operate on order of increased specificity. If an <code>announcement</code> targets an entire <code>region</code>, leave the recipients array empty - if any recipient is listed, the <code>announcement</code> will only go to the listed recipient(s).</em></p>
+<p class="has-line-data" data-line-start="62" data-line-end="63"><em>NOTE: the <code>region</code> and recipient fields operate on order of increased specificity. If an <code>announcement</code> targets an entire <code>region</code>, leave the recipients array empty - if any recipient is listed, the <code>announcement</code> will only go to the listed recipient(s).</em></p>
 </blockquote>
 <hr>
-<h3 class="code-line" data-line-start=62 data-line-end=63><a id="People_62"></a>People</h3>
-<p class="has-line-data" data-line-start="64" data-line-end="65"><em>This resource is used to quickly populate queries for <code>schedule-item</code>s with names of students and instructors</em></p>
-<p class="has-line-data" data-line-start="66" data-line-end="67"><strong>Schema</strong></p>
+<h3 class="code-line" data-line-start=66 data-line-end=67><a id="People_66"></a>People</h3>
+<p class="has-line-data" data-line-start="68" data-line-end="69"><em>This resource is used to quickly populate queries for <code>schedule-item</code>s with names of students and instructors</em></p>
+<p class="has-line-data" data-line-start="70" data-line-end="71"><strong>Schema</strong></p>
 <ul>
-<li class="has-line-data" data-line-start="68" data-line-end="70">region -&gt; regions</li>
+<li class="has-line-data" data-line-start="72" data-line-end="74">region -&gt; regions</li>
 </ul>
-<pre><code class="has-line-data" data-line-start="71" data-line-end="79" class="language-js">{
+<pre><code class="has-line-data" data-line-start="75" data-line-end="83" class="language-js">{
   firstName: <span class="hljs-string">"John"</span>,
   lastName: <span class="hljs-string">"Doe"</span>,
   username: <span class="hljs-string">"john_doe_123"</span>,
@@ -146,13 +156,13 @@
 </tbody>
 </table>
 <blockquote>
-<p class="has-line-data" data-line-start="93" data-line-end="94"><em>NOTE: When something needs to render <code>region</code> specific content, the first <code>region</code> in the array is used.</em></p>
+<p class="has-line-data" data-line-start="97" data-line-end="98"><em>NOTE: When something needs to render <code>region</code> specific content, the first <code>region</code> in the array is used.</em></p>
 </blockquote>
 <hr>
-<h3 class="code-line" data-line-start=97 data-line-end=98><a id="Region_97"></a>Region</h3>
-<p class="has-line-data" data-line-start="99" data-line-end="100"><em>This resource maintains <code>region</code> specific site content.</em></p>
-<p class="has-line-data" data-line-start="101" data-line-end="102"><strong>Schema</strong> [NO CHANGE]</p>
-<pre><code class="has-line-data" data-line-start="104" data-line-end="118" class="language-js">{
+<h3 class="code-line" data-line-start=101 data-line-end=102><a id="Region_101"></a>Region</h3>
+<p class="has-line-data" data-line-start="103" data-line-end="104"><em>This resource maintains <code>region</code> specific site content.</em></p>
+<p class="has-line-data" data-line-start="105" data-line-end="106"><strong>Schema</strong> [NO CHANGE]</p>
+<pre><code class="has-line-data" data-line-start="108" data-line-end="122" class="language-js">{
   name: <span class="hljs-string">"DISCOVERY_LA"</span>,
   address: <span class="hljs-string">"123 Main St., Los Angeles, Ca"</span>,
   siteContent: {
@@ -223,10 +233,10 @@
 </tbody>
 </table>
 <hr>
-<h3 class="code-line" data-line-start=133 data-line-end=134><a id="ScheduleItems_133"></a>ScheduleItems</h3>
-<p class="has-line-data" data-line-start="135" data-line-end="136"><em>This resource represents an item on a <code>person</code> or <code>people</code>'s schedule(s) within a specific <code>region</code>.</em></p>
-<p class="has-line-data" data-line-start="137" data-line-end="138"><strong>Schema</strong></p>
-<pre><code class="has-line-data" data-line-start="140" data-line-end="171" class="language-js">{
+<h3 class="code-line" data-line-start=137 data-line-end=138><a id="ScheduleItems_137"></a>ScheduleItems</h3>
+<p class="has-line-data" data-line-start="139" data-line-end="140"><em>This resource represents an item on a <code>person</code> or <code>people</code>'s schedule(s) within a specific <code>region</code>.</em></p>
+<p class="has-line-data" data-line-start="141" data-line-end="142"><strong>Schema</strong></p>
+<pre><code class="has-line-data" data-line-start="144" data-line-end="175" class="language-js">{
   name: <span class="hljs-string">"Open Math Time"</span>,
   _friendlyId: <span class="hljs-string">"LA_OPEN-MATH_JUNE"</span>,
   description: <span class="hljs-string">"Math is fun!"</span>,
@@ -374,6 +384,6 @@
 </tbody>
 </table>
 <blockquote>
-<p class="has-line-data" data-line-start="196" data-line-end="197"><em>NOTE: the <code>region</code> and participants fields operate on order of increased specificity. If a <code>schedule-item</code> targets an entire <code>region</code>, leave the participants array empty - if any participant is listed, the <code>schedule-item</code> will only go to the listed participant(s).</em></p>
+<p class="has-line-data" data-line-start="200" data-line-end="201"><em>NOTE: the <code>region</code> and participants fields operate on order of increased specificity. If a <code>schedule-item</code> targets an entire <code>region</code>, leave the participants array empty - if any participant is listed, the <code>schedule-item</code> will only go to the listed participant(s).</em></p>
 </blockquote>
 </body></html>
