@@ -152,7 +152,7 @@ app.get("/api/v3/docs", (req: Request, res: Response) => {
 
 // "Home" request
 app.get("/", (req: Request, res: Response) => {
-  res.send("BEAM Auth0 API - v3.1");
+  res.sendFile(`${process.cwd()}/public/index.html`);
 });
 
 // All other requests
