@@ -2,6 +2,7 @@ import { Types, Document } from "mongoose";
 
 export interface IScheduleItem extends Document {
   name: string;
+  _friendlyId: string;
   description?: string;
   note?: string; // used for info about 'optional' or 'required for a week'; maybe simplify with optional/required
   days: string;
@@ -14,6 +15,9 @@ export interface IScheduleItem extends Document {
     hour: number;
     minute: number;
   };
+  startDate: string;
+  endDate: string;
+  altHost: string;
   hosts: [Types.ObjectId];
   participants?: [Types.ObjectId];
   links?: [

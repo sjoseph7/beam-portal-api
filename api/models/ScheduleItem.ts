@@ -14,6 +14,13 @@ const _LinkSchema = new Schema({
     trim: true,
     maxlength: [100, "link text cannot exceed 100 characters"]
   },
+  _friendlyId: {
+    type: String,
+    trim: true,
+    maxlength: [100, "Friendly ID cannot exceed 100 characters"],
+    unique: true,
+    sparse: true
+  },
   type: {
     type: String,
     lowercase: true,
@@ -50,6 +57,14 @@ const ScheduleItemSchema = new Schema(
       trim: true,
       required: [true, "no name provided"],
       maxlength: 100
+    },
+    _friendlyId: {
+      type: String,
+      trim: true,
+      maxlength: [100, "Friendly ID cannot exceed 100 characters"],
+      select: false,
+      unique: true,
+      sparse: true
     },
     description: {
       type: String,
@@ -92,10 +107,25 @@ const ScheduleItemSchema = new Schema(
       type: _TimeSchema,
       required: [true, "no end time provided"]
     },
+    startDate: {
+      type: String,
+      trim: true,
+      minlength: [8, "Start date format is YYYYMMDD"],
+      maxlength: [8, "Start date format is YYYYMMDD"]
+    },
+    endDate: {
+      type: String,
+      trim: true,
+      minlength: [8, "End date format is YYYYMMDD"],
+      maxlength: [8, "End date format is YYYYMMDD"]
+    },
+    altHost: {
+      type: String,
+      trim: true,
+      maxlength: [100, "Alternate host name cannot exceed 100 characters"]
+    },
     hosts: {
-      type: [{ type: Types.ObjectId, ref: "person" }],
-      required: [true, "no host provided"],
-      validate: [arrayLengthLimits(1), "must list at least one host"]
+      type: [{ type: Types.ObjectId, ref: "person" }]
     },
     participants: {
       type: [{ type: Types.ObjectId, ref: "person" }]
