@@ -110,8 +110,8 @@ const ScheduleItemSchema = new Schema(
     startDate: {
       type: String,
       trim: true,
-      minlength: [8, "Start date format is YYYYMMDD"],
-      maxlength: [8, "Start date format is YYYYMMDD"]
+      minlength: [8, "Start date format is YYYYMMDD, please use 8 characters"],
+      maxlength: [8, "Start date format is YYYYMMDD, please use 8 characters"]
     },
     endDate: {
       type: String,
