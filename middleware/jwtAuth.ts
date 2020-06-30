@@ -1,4 +1,4 @@
-import eJwt from "express-jwt";
+import expressJwt from "express-jwt";
 import jwksRsa from "jwks-rsa";
 import { Request, Response, NextFunction } from "express";
 import { ErrorResponse } from "../api/utils/errorResponse";
@@ -19,7 +19,7 @@ const AUTH0_JWT_OPTIONS = {
 // Authentication middleware. When used, the
 // Access Token must exist and be verified against
 // the Auth0 JSON Web Key Set
-export const checkJwt = eJwt({
+export const _checkJwt = expressJwt({
   // Dynamically provide a signing key
   // based on the kid in the header and
   // the signing keys provided by the JWKS endpoint.
@@ -34,6 +34,39 @@ export const checkJwt = eJwt({
   ...AUTH0_JWT_OPTIONS,
   algorithms: ["RS256"]
 });
+
+export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
+  const middleware = expressJwt({
+    // Dynamically provide a signing key
+    // based on the kid in the header and
+    // the signing keys provided by the JWKS endpoint.
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: `${process.env.JWT_ISSUER}/.well-known/jwks.json`
+    }),
+
+    // Validate the audience and the issuer.
+    ...AUTH0_JWT_OPTIONS,
+    algorithms: ["RS256"]
+  });
+
+  const _next: NextFunction = (...errors) => {
+    if (errors.length === 0) {
+      next();
+    } else {
+      res.status(401).json({
+        success: false,
+        error: errors[0].message
+      });
+    }
+  };
+
+  try {
+    middleware(req, res, _next);
+  } catch (err) {}
+};
 
 export const checkPermissions = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
