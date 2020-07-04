@@ -62,7 +62,6 @@ const ScheduleItemSchema = new Schema(
       type: String,
       trim: true,
       maxlength: [100, "Friendly ID cannot exceed 100 characters"],
-      select: false,
       unique: true,
       sparse: true
     },
