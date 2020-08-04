@@ -26,8 +26,8 @@ export const advancedResults = (
     query = model.find(JSON.parse(queryStr));
 
     // Pagination
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 25;
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 25;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const total = await model.countDocuments();
@@ -36,13 +36,13 @@ export const advancedResults = (
 
     // Select displayed fields
     if (req.query.select) {
-      const fields = req.query.select.split(",").join(" ");
+      const fields = (req.query.select as string).split(",").join(" ");
       query = query.select(fields);
     }
 
     // Sort
     if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
+      const sortBy = (req.query.sort as string).split(",").join(" ");
       query = query.sort(sortBy);
     } else {
       query = query.sort("-createdAt");

@@ -52,7 +52,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     algorithms: ["RS256"]
   });
 
-  const _next: NextFunction = (...errors) => {
+  const _next: NextFunction = (...errors: any[]) => {
     if (errors.length === 0) {
       next();
     } else {
